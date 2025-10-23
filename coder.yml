@@ -1,0 +1,28 @@
+name: "Rider .NET 9 Dev"
+description: "Môi trường phát triển .NET 9 với JetBrains Rider và GitHub private repo (SSH key)"
+author: "itquynhon"
+tags: ["dotnet", "rider", "github"]
+icon: "./icon.png"
+
+image: "registry.itquynhon.uk/dotnet9-rider:latest"
+
+workspace:
+  cpu: 4
+  memory: 8GiB
+  disk: 20GiB
+  home_disk: 5GiB
+  env:
+    - name: GIT_REPO
+      display_name: "GitHub Private Repo"
+      default: "git@github.com:itquynhon/sample-dotnet9.git"
+  on_start:
+    - name: Clone repo (SSH)
+      run: |
+        if [ -n "$GIT_REPO" ]; then
+          echo "🔑 Using SSH deploy key to clone repo..."
+          git clone $GIT_REPO project || echo "⚠️ Clone failed"
+        fi
+  startup_script: |
+    echo "✅ Workspace sẵn sàng!"
+    echo "Kết nối Rider qua JetBrains Gateway:"
+    echo "ssh coder@$(hostname -I | awk '{print $1}')"
